@@ -2,7 +2,8 @@
 
 ## Goal
 
-Convert a Markdown string into an HTML fragment. This component is pure and stateless — it has no knowledge of files, templates, or configuration.
+Convert a Markdown string into an HTML fragment. This component is pure and
+stateless — it has no knowledge of files, templates, or configuration.
 
 ## Implementation Plan
 
@@ -15,6 +16,7 @@ Convert a Markdown string into an HTML fragment. This component is pure and stat
   - Enable at minimum: tables, fenced code blocks, strikethrough, autolinks
 - The output is an HTML fragment (no `<html>` / `<body>` wrapper)
 - Parser and renderer instances should be created once at bean construction (they are thread-safe)
+- Create reusable markdown files as a test resource
 
 ## Definition of Done
 
