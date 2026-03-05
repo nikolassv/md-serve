@@ -81,13 +81,18 @@ class MarkdownResourceTest {
     void nonExistentReturns404() {
         given()
             .when().get("/nonexistent")
-            .then().statusCode(404);
+            .then().statusCode(404)
+            .contentType(containsString("text/html"))
+            .body(containsString("<!DOCTYPE html>"))
+            .body(containsString("Not Found"));
     }
 
     @Test
     void pathTraversalReturns404() {
         given()
             .when().get("/../escape")
-            .then().statusCode(404);
+            .then().statusCode(404)
+            .contentType(containsString("text/html"));
     }
+
 }

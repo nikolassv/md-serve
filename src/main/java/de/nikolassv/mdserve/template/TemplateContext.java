@@ -12,5 +12,4 @@ public record TemplateContext(
         List<Breadcrumb> breadcrumbs,
         Map<String, Object> frontmatter
 ) {
-    public record Breadcrumb(String path, String label) {}
 }
