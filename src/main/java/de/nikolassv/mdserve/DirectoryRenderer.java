@@ -17,19 +17,19 @@ public class DirectoryRenderer {
     public String render(Path directory, String urlPath) {
         String dirName = directory.getFileName() != null ? directory.getFileName().toString() : "/";
         List<DirectoryIndexer.FileEntry> files = directoryIndexer.list(directory, "/" + urlPath);
-        List<String> breadcrumbs = buildBreadcrumbs(urlPath);
+        List<TemplateContext.Breadcrumb> breadcrumbs = buildBreadcrumbs(urlPath);
         TemplateContext ctx = new TemplateContext(dirName, null, files, breadcrumbs, Collections.emptyMap());
         return templateRenderer.render(ctx);
     }
 
-    private List<String> buildBreadcrumbs(String urlPath) {
+    private List<TemplateContext.Breadcrumb> buildBreadcrumbs(String urlPath) {
         if (urlPath == null || urlPath.isBlank()) return Collections.emptyList();
-        List<String> crumbs = new ArrayList<>();
+        List<TemplateContext.Breadcrumb> crumbs = new ArrayList<>();
         StringBuilder cumulative = new StringBuilder();
         for (String part : urlPath.split("/")) {
             if (part.isBlank()) continue;
             cumulative.append("/").append(part);
-            crumbs.add(cumulative.toString());
+            crumbs.add(new TemplateContext.Breadcrumb(cumulative.toString(), part));
         }
         return crumbs;
     }

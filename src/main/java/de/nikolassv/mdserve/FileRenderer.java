@@ -24,19 +24,19 @@ public class FileRenderer {
         FrontmatterParser.ParseResult parsed = frontmatterParser.parse(raw);
         String htmlContent = markdownRenderer.render(parsed.body());
         String title = titleResolver.resolve(parsed.frontmatter(), htmlContent, filePath.getFileName().toString());
-        List<String> breadcrumbs = buildBreadcrumbs(urlPath);
+        List<TemplateContext.Breadcrumb> breadcrumbs = buildBreadcrumbs(urlPath);
         TemplateContext ctx = new TemplateContext(title, htmlContent, null, breadcrumbs, parsed.frontmatter());
         return templateRenderer.render(ctx);
     }
 
-    private List<String> buildBreadcrumbs(String urlPath) {
+    private List<TemplateContext.Breadcrumb> buildBreadcrumbs(String urlPath) {
         if (urlPath == null || urlPath.isBlank()) return Collections.emptyList();
-        List<String> crumbs = new ArrayList<>();
+        List<TemplateContext.Breadcrumb> crumbs = new ArrayList<>();
         StringBuilder cumulative = new StringBuilder();
         for (String part : urlPath.split("/")) {
             if (part.isBlank()) continue;
             cumulative.append("/").append(part);
-            crumbs.add(cumulative.toString());
+            crumbs.add(new TemplateContext.Breadcrumb(cumulative.toString(), part));
         }
         return crumbs;
     }
