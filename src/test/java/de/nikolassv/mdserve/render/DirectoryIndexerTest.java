@@ -1,6 +1,7 @@
 package de.nikolassv.mdserve.render;
 
-import org.junit.jupiter.api.BeforeEach;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -11,16 +12,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@QuarkusTest
 class DirectoryIndexerTest {
 
     @TempDir Path tempDir;
 
-    DirectoryIndexer indexer;
-
-    @BeforeEach
-    void setUp() {
-        indexer = new DirectoryIndexer();
-    }
+    @Inject DirectoryIndexer indexer;
 
     @Test
     void listsMarkdownFilesAlphabetically() throws IOException {
