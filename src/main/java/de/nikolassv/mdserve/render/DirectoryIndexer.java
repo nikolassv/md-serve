@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.render;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -14,8 +14,6 @@ import java.util.List;
 public class DirectoryIndexer {
 
     private static final Logger LOG = Logger.getLogger(DirectoryIndexer.class);
-
-    public record FileEntry(String name, String path) {}
 
     public List<FileEntry> list(Path directory, String urlBase) {
         List<FileEntry> entries = new ArrayList<>();

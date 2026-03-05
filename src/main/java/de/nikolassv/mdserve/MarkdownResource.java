@@ -1,5 +1,7 @@
 package de.nikolassv.mdserve;
 
+import de.nikolassv.mdserve.render.DirectoryRenderer;
+import de.nikolassv.mdserve.render.FileRenderer;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

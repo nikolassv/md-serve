@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.markdown;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

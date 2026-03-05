@@ -1,5 +1,6 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.template;
 
+import de.nikolassv.mdserve.MdServeConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

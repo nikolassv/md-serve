@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.markdown;
 
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;

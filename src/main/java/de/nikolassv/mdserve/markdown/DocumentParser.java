@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.markdown;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,9 +12,16 @@ import java.util.Map;
 @ApplicationScoped
 public class DocumentParser {
 
-    @Inject FrontmatterParser frontmatterParser;
-    @Inject MarkdownRenderer markdownRenderer;
-    @Inject TitleResolver titleResolver;
+    private final FrontmatterParser frontmatterParser;
+    private final MarkdownRenderer markdownRenderer;
+    private final TitleResolver titleResolver;
+
+    @Inject
+    public DocumentParser(FrontmatterParser frontmatterParser, MarkdownRenderer markdownRenderer, TitleResolver titleResolver) {
+        this.frontmatterParser = frontmatterParser;
+        this.markdownRenderer = markdownRenderer;
+        this.titleResolver = titleResolver;
+    }
 
     public record ParsedDocument(String title, String content, Map<String, Object> frontmatter) {}
 

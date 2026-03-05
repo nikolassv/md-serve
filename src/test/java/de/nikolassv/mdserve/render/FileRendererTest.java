@@ -1,5 +1,12 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.render;
 
+import de.nikolassv.mdserve.MdServeConfig;
+import de.nikolassv.mdserve.markdown.DocumentParser;
+import de.nikolassv.mdserve.markdown.FrontmatterParser;
+import de.nikolassv.mdserve.markdown.MarkdownRenderer;
+import de.nikolassv.mdserve.markdown.TitleResolver;
+import de.nikolassv.mdserve.template.TemplateLoader;
+import de.nikolassv.mdserve.template.TemplateRenderer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -24,13 +31,8 @@ class FileRendererTest {
             public Optional<String> template() { return Optional.empty(); }
         };
         TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateLoader(config));
-        DocumentParser documentParser = new DocumentParser();
-        documentParser.frontmatterParser = new FrontmatterParser();
-        documentParser.markdownRenderer = new MarkdownRenderer();
-        documentParser.titleResolver = new TitleResolver();
-        renderer = new FileRenderer();
-        renderer.documentParser = documentParser;
-        renderer.templateRenderer = templateRenderer;
+        DocumentParser documentParser = new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver());
+        renderer = new FileRenderer(documentParser, templateRenderer);
     }
 
     @Test

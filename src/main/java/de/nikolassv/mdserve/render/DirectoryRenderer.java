@@ -1,24 +1,26 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.render;
 
+import de.nikolassv.mdserve.template.TemplateContext;
+import de.nikolassv.mdserve.template.TemplateRenderer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
-public class FileRenderer {
+public class DirectoryRenderer {
 
-    @Inject DocumentParser documentParser;
+    @Inject DirectoryIndexer directoryIndexer;
     @Inject TemplateRenderer templateRenderer;
 
-    public String render(Path filePath, String urlPath) throws IOException {
-        DocumentParser.ParsedDocument doc = documentParser.parse(filePath);
+    public String render(Path directory, String urlPath) {
+        String dirName = directory.getFileName() != null ? directory.getFileName().toString() : "/";
+        List<FileEntry> files = directoryIndexer.list(directory, "/" + urlPath);
         List<TemplateContext.Breadcrumb> breadcrumbs = buildBreadcrumbs(urlPath);
-        TemplateContext ctx = new TemplateContext(doc.title(), doc.content(), null, breadcrumbs, doc.frontmatter());
+        TemplateContext ctx = new TemplateContext(dirName, null, files, breadcrumbs, Collections.emptyMap());
         return templateRenderer.render(ctx);
     }
 

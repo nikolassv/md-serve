@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.template;
 
 import com.github.jknack.handlebars.Context;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.markdown;
 
 import jakarta.enterprise.context.ApplicationScoped;
 

@@ -1,4 +1,4 @@
-package de.nikolassv.mdserve;
+package de.nikolassv.mdserve.render;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,14 +26,14 @@ class DirectoryIndexerTest {
     void listsMarkdownFilesAlphabetically() throws IOException {
         Files.writeString(tempDir.resolve("b.md"), "# B");
         Files.writeString(tempDir.resolve("a.md"), "# A");
-        List<DirectoryIndexer.FileEntry> entries = indexer.list(tempDir, "/");
-        assertEquals(List.of("a.md", "b.md"), entries.stream().map(DirectoryIndexer.FileEntry::name).toList());
+        List<FileEntry> entries = indexer.list(tempDir, "/");
+        assertEquals(List.of("a.md", "b.md"), entries.stream().map(FileEntry::name).toList());
     }
 
     @Test
     void subdirectoriesAreListed() throws IOException {
         Files.createDirectory(tempDir.resolve("subdir"));
-        List<DirectoryIndexer.FileEntry> entries = indexer.list(tempDir, "/");
+        List<FileEntry> entries = indexer.list(tempDir, "/");
         assertEquals(1, entries.size());
         assertEquals("subdir", entries.get(0).name());
     }
@@ -42,7 +42,7 @@ class DirectoryIndexerTest {
     void nonMdFilesAreExcluded() throws IOException {
         Files.writeString(tempDir.resolve("readme.txt"), "ignored");
         Files.writeString(tempDir.resolve("page.md"), "# Page");
-        List<DirectoryIndexer.FileEntry> entries = indexer.list(tempDir, "/");
+        List<FileEntry> entries = indexer.list(tempDir, "/");
         assertEquals(1, entries.size());
         assertEquals("page.md", entries.get(0).name());
     }
@@ -55,7 +55,7 @@ class DirectoryIndexerTest {
     @Test
     void pathsAreCorrectlyBuilt() throws IOException {
         Files.writeString(tempDir.resolve("file.md"), "# F");
-        List<DirectoryIndexer.FileEntry> entries = indexer.list(tempDir, "/docs");
+        List<FileEntry> entries = indexer.list(tempDir, "/docs");
         assertEquals("/docs/file.md", entries.get(0).path());
     }
 }
