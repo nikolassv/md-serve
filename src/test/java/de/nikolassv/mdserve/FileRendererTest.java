@@ -23,14 +23,14 @@ class FileRendererTest {
             public String sourceDir() { return tempDir.toString(); }
             public Optional<String> template() { return Optional.empty(); }
         };
-        FrontmatterParser frontmatterParser = new FrontmatterParser();
-        MarkdownRenderer markdownRenderer = new MarkdownRenderer();
         TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateLoader(config));
+        DocumentParser documentParser = new DocumentParser();
+        documentParser.frontmatterParser = new FrontmatterParser();
+        documentParser.markdownRenderer = new MarkdownRenderer();
+        documentParser.titleResolver = new TitleResolver();
         renderer = new FileRenderer();
-        renderer.frontmatterParser = frontmatterParser;
-        renderer.markdownRenderer = markdownRenderer;
+        renderer.documentParser = documentParser;
         renderer.templateRenderer = templateRenderer;
-        renderer.titleResolver = new TitleResolver();
     }
 
     @Test

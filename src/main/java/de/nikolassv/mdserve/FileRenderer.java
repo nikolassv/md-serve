@@ -4,8 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,18 +12,13 @@ import java.util.List;
 @ApplicationScoped
 public class FileRenderer {
 
-    @Inject FrontmatterParser frontmatterParser;
-    @Inject MarkdownRenderer markdownRenderer;
+    @Inject DocumentParser documentParser;
     @Inject TemplateRenderer templateRenderer;
-    @Inject TitleResolver titleResolver;
 
     public String render(Path filePath, String urlPath) throws IOException {
-        String raw = Files.readString(filePath, StandardCharsets.UTF_8);
-        FrontmatterParser.ParseResult parsed = frontmatterParser.parse(raw);
-        String htmlContent = markdownRenderer.render(parsed.body());
-        String title = titleResolver.resolve(parsed.frontmatter(), htmlContent, filePath.getFileName().toString());
+        DocumentParser.ParsedDocument doc = documentParser.parse(filePath);
         List<TemplateContext.Breadcrumb> breadcrumbs = buildBreadcrumbs(urlPath);
-        TemplateContext ctx = new TemplateContext(title, htmlContent, null, breadcrumbs, parsed.frontmatter());
+        TemplateContext ctx = new TemplateContext(doc.title(), doc.content(), null, breadcrumbs, doc.frontmatter());
         return templateRenderer.render(ctx);
     }
 
