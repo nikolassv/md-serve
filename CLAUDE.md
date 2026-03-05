@@ -6,15 +6,16 @@ Java/Quarkus server that renders Markdown files from a directory as HTML using H
 
 ## Stack
 
-- Java 21, Quarkus, Maven
-- Handlebars (template rendering)
-- CommonMark or Flexmark (Markdown parsing — TBD)
-- SnakeYAML or similar (front matter parsing — TBD)
+- Java 21, Quarkus 3.32.2, Maven
+- `com.github.jknack:handlebars:4.4.0` (template rendering)
+- `com.vladsch.flexmark:flexmark-all:0.64.8` (Markdown parsing)
+- `org.yaml:snakeyaml` via Quarkus BOM (front matter parsing)
+- `io.rest-assured:rest-assured` (integration testing)
 
 ## Structure
 
 ```
-src/main/java/         Java source
+src/main/java/de/nikolassv/mdserve/   Java source (base package: de.nikolassv.mdserve)
 src/main/resources/
   application.properties
   templates/default.hbs   built-in Handlebars template
@@ -38,3 +39,11 @@ work/                  tickets and specs
 - Follow standard Quarkus project layout
 - Use MicroProfile Config for all configuration
 - Keep dependencies minimal
+
+## Development Workflow
+
+- Implementation is broken into numbered steps; specs live in `work/step-NN-*.md`
+- When a step is complete and verified, mark it `— DONE` and move it to `work/done/`
+- Verify each step's definition of done before moving on
+- Commit after each completed step
+- Do not add `Co-Authored-By` trailers to commit messages
