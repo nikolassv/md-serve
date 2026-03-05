@@ -36,11 +36,11 @@ class MarkdownResourceTest {
     }
 
     @Test
-    void rootReturnsDirectoryStub() {
+    void rootReturnsDirectoryPage() {
         given()
             .when().get("/")
             .then().statusCode(200)
-            .body(containsString("directory:"));
+            .body(containsString("<!DOCTYPE html>"));
     }
 
     @Test

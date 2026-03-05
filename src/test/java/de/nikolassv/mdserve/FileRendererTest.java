@@ -30,6 +30,7 @@ class FileRendererTest {
         renderer.frontmatterParser = frontmatterParser;
         renderer.markdownRenderer = markdownRenderer;
         renderer.templateRenderer = templateRenderer;
+        renderer.titleResolver = new TitleResolver();
     }
 
     @Test

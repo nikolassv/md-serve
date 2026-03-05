@@ -6,7 +6,7 @@ import java.util.Map;
 public record TemplateContext(
         String title,
         String content,
-        List<String> files,
+        List<DirectoryIndexer.FileEntry> files,
         List<String> breadcrumbs,
         Map<String, Object> frontmatter
 ) {}
