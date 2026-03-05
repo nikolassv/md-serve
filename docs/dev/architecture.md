@@ -10,47 +10,61 @@ md-serve is a Quarkus HTTP server that reads Markdown files from a configured di
 HTTP GET /{path}
      │
      ▼
+ MarkdownResource (JAX-RS)
+     │  single catch-all GET /{path:.*} route
+     │
+     ▼
  PathResolver
      │  maps URL path → file system path under source-dir
      │  strips/adds .md extension, normalizes, prevents path traversal
      │
-     ├─ path is a directory? → DirectoryIndexer
-     │                              lists .md files → TemplateRenderer
+     ├─ path is a directory? → DirectoryRenderer
+     │                              DirectoryIndexer lists .md files
+     │                              TemplateRenderer renders directory listing
      │
-     └─ path is a file?      → MarkdownReader
-                                    reads raw .md
-                                         │
-                                    FrontmatterParser  (strips YAML front matter, parses to map)
-                                         │
-                                    MarkdownRenderer   (parses remaining .md to HTML fragment)
-                                         │
-                                    TemplateRenderer   (merges context + template → full HTML)
+     ├─ path is a file?      → FileRenderer
+     │                              DocumentParser reads and parses .md:
+     │                                FrontmatterParser  strips YAML block → Map
+     │                                MarkdownRenderer   renders body → HTML fragment
+     │                                TitleResolver      derives title
+     │                              TemplateRenderer renders full HTML page
+     │
+     └─ not found / error    → ErrorRenderer
+                                    TemplateRenderer renders error page (404/500)
 ```
 
 ## Components
 
-| Component | Responsibility |
-|---|---|
-| `MarkdownResource` (JAX-RS) | Single catch-all `GET /{path:.*}` route; delegates to resolver |
-| `PathResolver` | Translates URL path to absolute file path; validates it stays within source-dir |
-| `FrontmatterParser` | Detects YAML front matter (`--- ... ---` block), strips it from Markdown source, parses it to a `Map<String, Object>` |
-| `MarkdownRenderer` | Parses the remaining Markdown to an HTML fragment (CommonMark/Flexmark) |
-| `DirectoryIndexer` | Lists `.md` files in a directory; extracts titles for link labels |
-| `TemplateRenderer` | Loads Handlebars template (custom or default), merges context, returns full HTML |
-| `TemplateLoader` | Resolves which template to use: custom path from config, else classpath default |
-| `MdServeConfig` | MicroProfile Config bean: `source-dir`, `template` |
+| Component | Package | Responsibility |
+|---|---|---|
+| `MarkdownResource` | root | Single `GET /{path:.*}` JAX-RS route; delegates to renderers |
+| `PathResolver` | root | Translates URL path to absolute `Path`; validates it stays within source-dir |
+| `MdServeConfig` | root | MicroProfile Config mapping: `source-dir`, `template` |
+| `DocumentParser` | markdown | Reads a `.md` file; coordinates front matter parsing, Markdown rendering, and title resolution; returns a `ParsedDocument` record |
+| `FrontmatterParser` | markdown | Detects `--- ... ---` block, strips it from the source, parses it to `Map<String, Object>` |
+| `MarkdownRenderer` | markdown | Converts Markdown body text to an HTML fragment using Flexmark |
+| `TitleResolver` | markdown | Derives a page title: `frontmatter.title` > first H1 in HTML > filename |
+| `FileEntry` | render | DTO for a directory listing entry (`name`, `path`, `title`) |
+| `FileRenderer` | render | Orchestrates file requests: parse document → build context → render template |
+| `DirectoryRenderer` | render | Orchestrates directory requests: list files → build context → render template |
+| `DirectoryIndexer` | render | Lists `.md` files in a directory; extracts their titles for link labels |
+| `ErrorRenderer` | render | Renders 404 and 500 error pages through the template pipeline; falls back to plain text if the template itself fails |
+| `Breadcrumb` | template | DTO for a breadcrumb navigation entry (`label`, `path`) |
+| `TemplateContext` | template | Record holding all template variables passed to Handlebars |
+| `TemplateLoader` | template | Resolves which template to use: custom path from config, else `templates/default.hbs` on the classpath |
+| `TemplateRenderer` | template | Loads the Handlebars template via `TemplateLoader`, merges a `TemplateContext`, returns full HTML |
 
 ## Template Context
 
-The following context is passed to the Handlebars template on every request:
+The following variables are available in every Handlebars template:
 
 ```
 {
-  title:        string                // first H1 in content, or filename as fallback
-  content:      html string           // rendered Markdown (null for directory listings)
-  files:        [{name, path, title}] // directory listing entries (null for file requests)
-  breadcrumbs:  [{label, path}]       // navigation trail derived from URL path
-  frontmatter:  map                   // parsed YAML front matter, or empty map if absent
+  title:        string                 // derived title (frontmatter > H1 > filename)
+  content:      html string            // rendered Markdown HTML (null for directory listings)
+  files:        [{name, path, title}]  // directory entries (null for file requests)
+  breadcrumbs:  [{label, path}]        // navigation trail; empty list at root
+  frontmatter:  map                    // parsed YAML front matter, or empty map
 }
 ```
 
@@ -68,7 +82,7 @@ tags: [quarkus, markdown]
 # Document content starts here
 ```
 
-The parsed values are available in templates as `{{frontmatter.title}}`, `{{frontmatter.author}}`, etc. If a `title` key is present in the front matter, it takes precedence over the H1-derived title in the `title` context property.
+The parsed values are available in templates as `{{frontmatter.title}}`, `{{frontmatter.author}}`, etc. If a `title` key is present, it takes precedence over the H1-derived title in the `title` context property.
 
 ## Configuration
 
@@ -79,8 +93,9 @@ The parsed values are available in templates as `{{frontmatter.title}}`, `{{fron
 
 ## Key Design Decisions
 
-- **Single route** — `GET /{path:.*}` handles both files and directories; returns 404 for missing paths.
-- **No database** — purely file-system driven; files are read on each request (caching is out of scope for now).
+- **Single route** — `GET /{path:.*}` handles files, directories, and errors; 404 for missing paths, 500 for unexpected failures.
+- **No database** — purely file-system driven; files are read on each request.
 - **Path traversal safety** — `PathResolver` rejects any resolved path outside `source-dir`.
 - **Template override** — `TemplateLoader` checks `md-serve.template` first; falls back to `templates/default.hbs` on the classpath.
 - **Title resolution order** — `frontmatter.title` > first H1 in content > filename.
+- **Subpackage structure** — code is split into `markdown` (parsing), `render` (orchestration), and `template` (output) packages to keep concerns separate.

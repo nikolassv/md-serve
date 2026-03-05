@@ -47,3 +47,4 @@ work/                  tickets and specs
 - Verify each step's definition of done before moving on
 - Commit after each completed step
 - Do not add `Co-Authored-By` trailers to commit messages
+- Keep `docs/` up to date when implementing a ticket: update any affected architecture, configuration, or user docs as part of the same step
