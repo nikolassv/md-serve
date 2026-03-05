@@ -95,4 +95,12 @@ class MarkdownResourceTest {
             .contentType(containsString("text/html"));
     }
 
+    @Test
+    void subdirListingReturns200WithHtml() {
+        given()
+            .when().get("/subdir")
+            .then().statusCode(200)
+            .body(containsString("<!DOCTYPE html>"));
+    }
+
 }
