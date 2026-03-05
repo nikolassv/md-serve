@@ -2,7 +2,8 @@
 
 ## Goal
 
-Load the correct Handlebars template and render a context map into a complete HTML page. Establish the default template as a working fallback.
+Load the correct Handlebars template and render a context map into a complete
+HTML page. Establish the default template as a working fallback.
 
 ## Implementation Plan
 
@@ -23,7 +24,10 @@ Load the correct Handlebars template and render a context map into a complete HT
 
 ## Definition of Done
 
-- Application fails fast with a clear error message if a configured custom template path does not exist
-- `TemplateRenderer.render()` produces valid HTML containing the provided title and content
+- Application fails fast with a clear error message if a configured custom
+	template path does not exist
+- `TemplateRenderer.render()` produces valid HTML containing the provided title
+	and content
 - Default template is served correctly when no custom template is configured
-- Unit test: render a minimal context with the default template and assert the output contains expected title and content
+- Unit test: render a minimal context with the default template and assert the
+	output contains expected title and content
