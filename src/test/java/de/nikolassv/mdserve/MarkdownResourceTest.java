@@ -2,17 +2,12 @@ package de.nikolassv.mdserve;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
-import io.smallrye.config.SmallRyeConfigBuilder;
-import org.eclipse.microprofile.config.spi.ConfigSource;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
@@ -29,7 +24,10 @@ class MarkdownResourceTest {
             try {
                 tempDir = Files.createTempDirectory("md-serve-test");
                 Files.createDirectory(tempDir.resolve("subdir"));
-                Files.writeString(tempDir.resolve("hello.md"), "# Hello");
+                Files.writeString(tempDir.resolve("hello.md"), "# Hello\n\nSome content.");
+                Files.writeString(tempDir.resolve("fm.md"),
+                        "---\ntitle: Front Matter Title\n---\n# H1 Title\n\nBody text.");
+                Files.writeString(tempDir.resolve("h1only.md"), "# H1 Title\n\nNo front matter.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -46,11 +44,37 @@ class MarkdownResourceTest {
     }
 
     @Test
-    void existingFileReturns200() {
+    void fileRendersFullHtmlPage() {
         given()
             .when().get("/hello.md")
             .then().statusCode(200)
-            .body(containsString("file:"));
+            .body(containsString("<!DOCTYPE html>"))
+            .body(containsString("<h1>Hello</h1>"))
+            .body(containsString("Some content."));
+    }
+
+    @Test
+    void titleFromFrontmatterTakesPriority() {
+        given()
+            .when().get("/fm.md")
+            .then().statusCode(200)
+            .body(containsString("<title>Front Matter Title</title>"));
+    }
+
+    @Test
+    void titleFromH1WhenNoFrontmatter() {
+        given()
+            .when().get("/h1only.md")
+            .then().statusCode(200)
+            .body(containsString("<title>H1 Title</title>"));
+    }
+
+    @Test
+    void titleFallsBackToFilename() {
+        given()
+            .when().get("/hello")
+            .then().statusCode(200)
+            .body(containsString("<title>Hello</title>"));
     }
 
     @Test
