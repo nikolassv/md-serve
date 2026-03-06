@@ -21,7 +21,8 @@ class TemplateRendererTest {
                 "<p>Hello</p>",
                 List.of(),
                 List.of(),
-                Collections.emptyMap()
+                Collections.emptyMap(),
+                List.of()
         );
         String html = renderer.render(ctx);
 

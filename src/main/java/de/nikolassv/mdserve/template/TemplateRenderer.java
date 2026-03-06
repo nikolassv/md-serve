@@ -23,6 +23,7 @@ public class TemplateRenderer {
                 .combine("files", ctx.files())
                 .combine("breadcrumbs", ctx.breadcrumbs())
                 .combine("frontmatter", ctx.frontmatter())
+                .combine("tree", ctx.tree())
                 .build();
         try {
             return templateLoader.get().apply(context);

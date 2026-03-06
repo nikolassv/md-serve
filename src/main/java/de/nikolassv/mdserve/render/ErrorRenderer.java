@@ -17,6 +17,7 @@ public class ErrorRenderer {
     private static final Logger LOG = Logger.getLogger(ErrorRenderer.class);
 
     @Inject TemplateRenderer templateRenderer;
+    @Inject DirectoryTreeBuilder treeBuilder;
 
     public Response renderNotFound(String urlPath) {
         return renderErrorPage(urlPath, Response.Status.NOT_FOUND,
@@ -31,7 +32,7 @@ public class ErrorRenderer {
     private Response renderErrorPage(String urlPath, Response.Status status, String title, String content) {
         try {
             TemplateContext ctx = new TemplateContext(title, content, null,
-                    Breadcrumb.listFor(urlPath), Collections.emptyMap());
+                    Breadcrumb.listFor(urlPath), Collections.emptyMap(), treeBuilder.build(null));
             String html = templateRenderer.render(ctx);
             return Response.status(status).type(MediaType.TEXT_HTML).entity(html).build();
         } catch (Exception e) {

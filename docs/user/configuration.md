@@ -6,6 +6,7 @@
 |---|---|---|---|
 | `md-serve.source-dir` | `String` | `./docs` | Directory containing Markdown files to serve. Relative paths are resolved from the working directory at startup. |
 | `md-serve.template` | `String` | _(built-in)_ | Path to a custom Handlebars (`.hbs`) template file. When omitted, the bundled `templates/default.hbs` is used. |
+| `md-serve.max-tree-depth` | `int` | `20` | Maximum directory depth when building the site navigation tree. Directories beyond this depth are silently omitted from the tree. Symlinks are never followed regardless of this limit. |
 
 ### Example
 
@@ -52,6 +53,7 @@ Create a `.hbs` file and set `md-serve.template` to its path. The following cont
 | `{{files}}` | list | Directory entries, each with `.name`, `.path`, and `.title`. `null` for file requests. |
 | `{{breadcrumbs}}` | list | Navigation trail, each with `.label` and `.path`. Empty at the root. |
 | `{{frontmatter}}` | map | Parsed YAML front matter. Empty map if none present. |
+| `{{tree}}` | list | Recursive site navigation tree. Each node has `.name`, `.path`, `.directory`, `.active`, and `.children`. `active` is `true` for the current page and all its ancestor directories. Hidden entries and non-`.md` files are excluded. Use the built-in `treeNav` helper (see below) to render it. |
 
 ### Minimal template example
 
@@ -72,6 +74,20 @@ Create a `.hbs` file and set `md-serve.template` to its path. The following cont
 </body>
 </html>
 ```
+
+### Rendering the navigation tree
+
+A built-in Handlebars helper renders the full site tree as a collapsible navigation sidebar. Directories expand and collapse using the browser's native `<details>`/`<summary>` behaviour — no JavaScript required. The directory containing the current page, and the current page itself, are automatically expanded and highlighted.
+
+```hbs
+{{#if tree}}
+<nav>
+  {{{treeNav tree}}}
+</nav>
+{{/if}}
+```
+
+Use triple braces (`{{{...}}}`) to prevent Handlebars from HTML-escaping the output.
 
 ### Accessing front matter in a template
 

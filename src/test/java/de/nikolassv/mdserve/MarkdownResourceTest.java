@@ -138,4 +138,12 @@ class MarkdownResourceTest {
             .then().statusCode(404);
     }
 
+    @Test
+    void renderedPageContainsSiteTreeSidebar() {
+        given()
+            .when().get("/hello")
+            .then().statusCode(200)
+            .body(containsString("<nav class=\"site-tree\">"));
+    }
+
 }

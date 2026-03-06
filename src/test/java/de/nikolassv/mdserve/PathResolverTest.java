@@ -23,6 +23,7 @@ class PathResolverTest {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return tempDir.toString(); }
             public Optional<String> template() { return Optional.empty(); }
+            public int maxTreeDepth() { return 20; }
         };
         resolver = new PathResolver(config);
     }

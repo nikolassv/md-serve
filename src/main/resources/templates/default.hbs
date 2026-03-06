@@ -146,13 +146,86 @@
             background: #f6f8fa;
             text-decoration: none;
         }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        /* Site tree sidebar */
+        nav.site-tree {
+            flex: 0 0 200px;
+            font-size: 0.875rem;
+            border-right: 1px solid #e5e5e5;
+            padding-right: 1.5rem;
+            padding-top: 0.5rem;
+        }
+
+        nav.site-tree .tree-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav.site-tree .tree-list .tree-list {
+            padding-left: 1em;
+        }
+
+        nav.site-tree li {
+            margin: 0.15em 0;
+        }
+
+        nav.site-tree a {
+            color: #444;
+            text-decoration: none;
+            display: inline-block;
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+        }
+
+        nav.site-tree a:hover {
+            background: #f6f8fa;
+            color: #0969da;
+        }
+
+        nav.site-tree a.active,
+        nav.site-tree li.active > details > summary > a {
+            font-weight: 600;
+            color: #0969da;
+        }
+
+        nav.site-tree details > summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        nav.site-tree details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        nav.site-tree details > summary::before {
+            content: "▶ ";
+            font-size: 0.65em;
+            vertical-align: middle;
+            color: #999;
+        }
+
+        nav.site-tree details[open] > summary::before {
+            content: "▼ ";
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
     </style>
 </head>
 <body>
 <div class="container">
 
-    {{!-- Breadcrumb navigation --}}
-    {{#if breadcrumbs}}
+    {{!-- Breadcrumb navigation (always shown; breadcrumbs list is empty at root) --}}
     <nav class="breadcrumb">
         <a class="home" href="/">Home</a>
         {{#each breadcrumbs}}
@@ -160,24 +233,34 @@
         {{#if @last}}<span class="current">{{label}}</span>{{else}}<a href="{{path}}">{{label}}</a>{{/if}}
         {{/each}}
     </nav>
-    {{/if}}
 
-    <main>
-        {{!-- File content (already rendered HTML) --}}
-        {{#if content}}
-        {{{content}}}
+    <div class="layout">
+
+        {{!-- Site-wide navigation tree (rendered via treeNav helper) --}}
+        {{#if tree}}
+        <nav class="site-tree">
+            {{{treeNav tree}}}
+        </nav>
         {{/if}}
 
-        {{!-- Directory listing --}}
-        {{#if files}}
-        <h1>{{title}}</h1>
-        <ul class="file-list">
-            {{#each files}}
-            <li><a href="{{path}}">{{name}}</a></li>
-            {{/each}}
-        </ul>
-        {{/if}}
-    </main>
+        <main class="main-content">
+            {{!-- File content (already rendered HTML) --}}
+            {{#if content}}
+            {{{content}}}
+            {{/if}}
+
+            {{!-- Directory listing --}}
+            {{#if files}}
+            <h1>{{title}}</h1>
+            <ul class="file-list">
+                {{#each files}}
+                <li><a href="{{path}}">{{name}}</a></li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </main>
+
+    </div>
 
 </div>
 {{!--

@@ -47,4 +47,13 @@ work/                  tickets and specs
 - Verify each step's definition of done before moving on
 - Commit after each completed step
 - Do not add `Co-Authored-By` trailers to commit messages
-- Keep `docs/` up to date when implementing a ticket: update any affected architecture, configuration, or user docs as part of the same step
+
+### Documentation is mandatory before committing
+
+**Always update `docs/` before creating a commit.** This is a hard requirement, not optional. For every step:
+
+1. Update `docs/dev/architecture.md` for any new or changed components, helpers, design decisions, or template context variables.
+2. Update `docs/user/configuration.md` for any new config properties or template variables/helpers visible to users.
+3. Update `docs/user/getting-started.md` if the change affects the out-of-the-box user experience.
+
+Do not wait to be reminded. Docs must be updated as part of the same step as the code, before the commit is made.

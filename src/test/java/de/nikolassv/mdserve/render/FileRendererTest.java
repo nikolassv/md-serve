@@ -29,10 +29,12 @@ class FileRendererTest {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return tempDir.toString(); }
             public Optional<String> template() { return Optional.empty(); }
+            public int maxTreeDepth() { return 20; }
         };
         TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateLoader(config));
         DocumentParser documentParser = new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver());
-        renderer = new FileRenderer(documentParser, templateRenderer);
+        DirectoryTreeBuilder treeBuilder = new DirectoryTreeBuilder(config);
+        renderer = new FileRenderer(documentParser, templateRenderer, treeBuilder);
     }
 
     @Test

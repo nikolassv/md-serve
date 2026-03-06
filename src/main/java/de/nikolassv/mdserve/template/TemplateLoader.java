@@ -40,7 +40,7 @@ public class TemplateLoader {
         }
         try {
             String source = Files.readString(path, StandardCharsets.UTF_8);
-            return new Handlebars().compileInline(source);
+            return handlebars().compileInline(source);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load template: " + templatePath, e);
         }
@@ -54,9 +54,15 @@ public class TemplateLoader {
             char[] buf = new char[4096];
             int n;
             while ((n = reader.read(buf)) != -1) sb.append(buf, 0, n);
-            return new Handlebars().compileInline(sb.toString());
+            return handlebars().compileInline(sb.toString());
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load built-in default template", e);
         }
+    }
+
+    private Handlebars handlebars() {
+        Handlebars hbs = new Handlebars();
+        hbs.registerHelper("treeNav", new TreeNavHelper());
+        return hbs;
     }
 }

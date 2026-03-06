@@ -12,4 +12,7 @@ public interface MdServeConfig {
     String sourceDir();
 
     Optional<String> template();
+
+    @WithDefault("20")
+    int maxTreeDepth();
 }
