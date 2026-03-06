@@ -42,11 +42,14 @@ work/                  tickets and specs
 
 ## Development Workflow
 
-- Implementation is broken into numbered steps; specs live in `work/step-NN-*.md`
-- When a step is complete and verified, mark it `— DONE` and move it to `work/done/`
-- Verify each step's definition of done before moving on
-- Commit after each completed step
+- Use OpenSpec for all new changes: explore → propose → apply → archive
+- `/opsx:explore` — think through an idea before proposing
+- `/opsx:propose` — create a change with design, spec, and tasks
+- `/opsx:apply` — implement tasks from an open change
+- `/opsx:archive` — finalize and archive after the change is complete
+- Commit after each completed change
 - Do not add `Co-Authored-By` trailers to commit messages
+- Historical step specs live in `work/done/` — leave them as-is
 
 ### Documentation is mandatory before committing
 
