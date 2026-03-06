@@ -140,5 +140,6 @@ Only `secrets.GITHUB_TOKEN` is required — no additional repository secrets.
 - **Path traversal safety** — `PathResolver` rejects any resolved path outside `source-dir`.
 - **Convention-based template discovery** — `TemplateRegistry` scans `<source-dir>/.md-serve/templates/` at startup. Three roles are defined (`default`, `directory`, `error`); each has a bundled classpath fallback. Additional `.hbs` files in that directory are loaded by name for per-file front matter overrides. The `.md-serve/` directory is hidden from the router by the dot-prefix rule.
 - **Role-based dispatch** — `FileRenderer` uses the `default` role (or `template` from front matter), `DirectoryRenderer` uses `directory`, and `ErrorRenderer` uses `error`. Unknown names fall back to `default`.
+- **Generator attribution** — all three bundled templates include `<meta name="generator" content="md-serve (https://github.com/nikolassv/md-serve)">`. This is omitted when users override templates with their own `.hbs` files.
 - **Title resolution order** — `frontmatter.title` > first H1 in content > filename.
 - **Subpackage structure** — code is split into `markdown` (parsing), `render` (orchestration), and `template` (output) packages to keep concerns separate.
