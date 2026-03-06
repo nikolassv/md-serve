@@ -3,3 +3,10 @@ target/
 *.jar
 .quarkus/
 *.swp
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
