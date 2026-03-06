@@ -118,6 +118,10 @@ Custom helpers are registered on the shared `Handlebars` instance inside `Templa
 |---|---|---|
 | `treeNav` | `{{{treeNav tree}}}` | Renders the `tree` context variable as a fully recursive, collapsible `<ul>` navigation tree. Directories become `<details>/<summary>` elements (opened automatically when active). Active nodes receive the `active` CSS class. Use triple braces to avoid HTML escaping. |
 
+## CI Pipeline
+
+The GitHub Actions workflow at `.github/workflows/ci.yml` triggers on every push to `main` and on every pull request. It runs `mvn verify` on `ubuntu-latest` using Java 21 (Temurin), which covers both unit tests and Quarkus integration tests.
+
 ## Release Pipeline
 
 The GitHub Actions workflow at `.github/workflows/release.yml` triggers on `v*` tag pushes and produces a GitHub Release containing:
