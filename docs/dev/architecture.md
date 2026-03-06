@@ -137,6 +137,22 @@ The release body is extracted from the `## [<version>]` section in `CHANGELOG.md
 
 Only `secrets.GITHUB_TOKEN` is required — no additional repository secrets.
 
+## Native Image Compatibility
+
+Three issues must be kept in mind when building native executables:
+
+1. **Flexmark `Escaping` class** — `com.vladsch.flexmark.util.sequence.Escaping` holds a `static Random` field initialised at class load time. GraalVM refuses to bake `Random` instances into the image heap, so `application.properties` forces run-time initialisation:
+   ```
+   quarkus.native.additional-build-args=--initialize-at-run-time=com.vladsch.flexmark.util.sequence.Escaping
+   ```
+
+2. **Bundled templates** — classpath resources are not included in native images by default. The `*.hbs` template files are explicitly registered:
+   ```
+   quarkus.native.resources.includes=templates/*.hbs
+   ```
+
+3. **Handlebars reflection** — Handlebars resolves record accessor methods (e.g. `name()`, `path()`, `label()`) via reflection at runtime. `FileEntry` and `Breadcrumb` are annotated with `@RegisterForReflection` to ensure those methods survive native compilation. `TreeNode` does not need this because it is only accessed from `TreeNavHelper` via direct Java calls, never through Handlebars template reflection.
+
 ## Key Design Decisions
 
 - **Single route** — `GET /{path:.*}` handles files, directories, and errors; 404 for missing paths, 500 for unexpected failures.

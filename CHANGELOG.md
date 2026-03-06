@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native image: `com.vladsch.flexmark.util.sequence.Escaping` initialised at run time to avoid GraalVM `Random`-in-heap error (`--initialize-at-run-time`)
+- Native image: bundled Handlebars templates (`templates/*.hbs`) now included in the native binary via `quarkus.native.resources.includes`
+- Native image: `FileEntry` and `Breadcrumb` records annotated with `@RegisterForReflection` so Handlebars can resolve their accessor methods (`name()`, `path()`, `label()`) at runtime; without this, directory listings rendered empty and breadcrumbs were blank
+
 ### Added
 
 - Quarkus 3 HTTP server serving Markdown files from a configured directory as rendered HTML

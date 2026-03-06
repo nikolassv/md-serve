@@ -1,9 +1,12 @@
 package de.nikolassv.mdserve.template;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@RegisterForReflection
 public record Breadcrumb(String path, String label) {
 
     public static List<Breadcrumb> listFor(String urlPath) {
