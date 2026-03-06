@@ -36,9 +36,6 @@ jobs:
           - os: ubuntu-latest
             artifact: md-serve-linux-x86_64
             binary-glob: target/*-runner
-          - os: macos-13
-            artifact: md-serve-macos-x86_64
-            binary-glob: target/*-runner
           - os: macos-latest
             artifact: md-serve-macos-aarch64
             binary-glob: target/*-runner
@@ -96,10 +93,6 @@ jobs:
           tar -czf md-serve-linux-x86_64.tar.gz md-serve
           rm md-serve
 
-          cp artifacts/md-serve-macos-x86_64/*-runner md-serve
-          tar -czf md-serve-macos-x86_64.tar.gz md-serve
-          rm md-serve
-
           cp artifacts/md-serve-macos-aarch64/*-runner md-serve
           tar -czf md-serve-macos-aarch64.tar.gz md-serve
           rm md-serve
@@ -117,6 +110,5 @@ jobs:
             --notes-file release-notes.md \
             md-serve.jar \
             md-serve-linux-x86_64.tar.gz \
-            md-serve-macos-x86_64.tar.gz \
             md-serve-macos-aarch64.tar.gz \
             md-serve-windows-x86_64.zip
