@@ -6,7 +6,7 @@ import io.smallrye.config.WithDefault;
 @ConfigMapping(prefix = "md-serve")
 public interface MdServeConfig {
 
-    @WithDefault("./docs")
+    @WithDefault(".")
     String sourceDir();
 
     @WithDefault("20")

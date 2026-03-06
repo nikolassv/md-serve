@@ -19,7 +19,7 @@ Produces `target/quarkus-app/` with a runnable Quarkus fast-jar.
 ./mvnw quarkus:dev
 ```
 
-Starts the server on `http://localhost:8080` with live reload. The source directory defaults to `./docs`.
+Starts the server on `http://localhost:8080` with live reload. The source directory defaults to `.`.
 
 ## Run tests
 
@@ -57,7 +57,7 @@ src/main/java/de/nikolassv/mdserve/
     TemplateRenderer.java     Merges a TemplateContext into a Handlebars template
 
 src/main/resources/
-  application.properties      Default config (source-dir=./docs)
+  application.properties      Default config (source-dir=.)
   templates/default.hbs       Built-in Handlebars template
 ```
 

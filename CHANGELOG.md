@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Breadcrumb navigation on all pages
 - Directory index listings with file titles
 - Path traversal protection: resolved paths are constrained to the configured source directory
-- Configuration properties: `md-serve.source-dir` (default: `./docs`), `md-serve.max-tree-depth` (default: `20`)
+- Configuration properties: `md-serve.source-dir` (default: `.` - the current working directory), `md-serve.max-tree-depth` (default: `20`)
 - GitHub Actions release pipeline: builds `md-serve.jar` (uber JAR) and native executables packaged as `md-serve-<platform>.tar.gz` / `.zip` (each containing a binary named `md-serve`) for Linux, macOS (x86_64 + aarch64), and Windows on every `v*` tag push
 
 [Unreleased]: https://github.com/nikolassv/md-serve/compare/v0.1.0...HEAD

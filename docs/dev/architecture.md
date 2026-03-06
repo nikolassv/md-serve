@@ -107,7 +107,7 @@ The parsed values are available in templates as `{{frontmatter.title}}`, `{{fron
 
 | Property | Description | Default |
 |---|---|---|
-| `md-serve.source-dir` | Directory containing Markdown files | `./docs` |
+| `md-serve.source-dir` | Directory containing Markdown files | `.` |
 | `md-serve.max-tree-depth` | Maximum directory depth for the site navigation tree | `20` |
 
 ## Handlebars Helpers

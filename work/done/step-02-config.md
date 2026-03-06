@@ -10,7 +10,7 @@ Provide a typed, injectable configuration bean that exposes all application sett
   ```java
   @ConfigMapping(prefix = "md-serve")
   interface MdServeConfig {
-      @WithDefault("./docs")
+      @WithDefault(".")
       String sourceDir();
 
       Optional<String> template();
@@ -25,6 +25,6 @@ Provide a typed, injectable configuration bean that exposes all application sett
 ## Definition of Done
 
 - `MdServeConfig` is injectable across the application
-- `md-serve.source-dir` defaults to `./docs` when not set
+- `md-serve.source-dir` defaults to `.` when not set
 - `md-serve.template` is absent by default and can be set to an arbitrary path
 - A simple unit test or Quarkus `@QuarkusTest` verifies the defaults are applied correctly

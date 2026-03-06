@@ -4,7 +4,7 @@
 
 | Property | Type | Default | Description |
 |---|---|---|---|
-| `md-serve.source-dir` | `String` | `./docs` | Directory containing Markdown files to serve. Relative paths are resolved from the working directory at startup. |
+| `md-serve.source-dir` | `String` | `.` | Directory containing Markdown files to serve. Relative paths are resolved from the working directory at startup. |
 | `md-serve.max-tree-depth` | `int` | `20` | Maximum directory depth when building the site navigation tree. Directories beyond this depth are silently omitted from the tree. Symlinks are never followed regardless of this limit. |
 
 ### Example

@@ -45,13 +45,13 @@ chmod +x md-serve
 ./mvnw quarkus:dev
 ```
 
-Open `http://localhost:8080`. Serves the `./docs` directory by default.
+Open `http://localhost:8080`. Serves the current working directory by default.
 
 ## Configuration
 
 | Property | Default | Description |
 |---|---|---|
-| `md-serve.source-dir` | `./docs` | Directory of Markdown files to serve |
+| `md-serve.source-dir` | `.` | Directory of Markdown files to serve |
 | `md-serve.max-tree-depth` | `20` | Maximum directory depth for the navigation tree |
 
 Set properties in `src/main/resources/application.properties` or on the command line with `-D<property>=<value>`.

@@ -40,7 +40,7 @@ cd md-serve
 ./mvnw quarkus:dev
 ```
 
-The server starts on `http://localhost:8080`. By default it serves the `./docs` directory relative to where you run the command.
+The server starts on `http://localhost:8080`. By default, it serves the working directory where you run the command.
 
 To serve a different directory, set the `md-serve.source-dir` property:
 

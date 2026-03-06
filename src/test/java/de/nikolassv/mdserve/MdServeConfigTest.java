@@ -14,7 +14,7 @@ class MdServeConfigTest {
 
     @Test
     void sourceDirDefaultsToDocsDir() {
-        assertEquals("./docs", config.sourceDir());
+        assertEquals(".", config.sourceDir());
     }
 
 }
