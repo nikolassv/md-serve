@@ -1,0 +1,122 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-jar:
+    name: Build Uber JAR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build uber JAR
+        run: ./mvnw -B package -Dquarkus.package.jar.type=uber-jar -DskipTests
+
+      - name: Upload uber JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: md-serve-uber-jar
+          path: target/*-runner.jar
+
+  build-native:
+    name: Build native (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: md-serve-linux-x86_64
+            binary-glob: target/*-runner
+          - os: macos-13
+            artifact: md-serve-macos-x86_64
+            binary-glob: target/*-runner
+          - os: macos-latest
+            artifact: md-serve-macos-aarch64
+            binary-glob: target/*-runner
+          - os: windows-latest
+            artifact: md-serve-windows-x86_64
+            binary-glob: target/*-runner.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm-community'
+          cache: 'maven'
+
+      - name: Build native binary
+        shell: bash
+        run: ./mvnw -B package -Pnative -DskipTests
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.binary-glob }}
+
+  release:
+    name: Create GitHub Release
+    needs: [build-jar, build-native]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract changelog for tag
+        run: |
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"
+          awk "/^## \[${VERSION}\]/{found=1; next} /^## \[/{if(found) exit} found{print}" CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "::error::Version ${VERSION} not found in CHANGELOG.md — add a [${VERSION}] section before tagging"
+            exit 1
+          fi
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release assets
+        run: |
+          cp artifacts/md-serve-uber-jar/*-runner.jar md-serve.jar
+
+          cp artifacts/md-serve-linux-x86_64/*-runner md-serve
+          tar -czf md-serve-linux-x86_64.tar.gz md-serve
+          rm md-serve
+
+          cp artifacts/md-serve-macos-x86_64/*-runner md-serve
+          tar -czf md-serve-macos-x86_64.tar.gz md-serve
+          rm md-serve
+
+          cp artifacts/md-serve-macos-aarch64/*-runner md-serve
+          tar -czf md-serve-macos-aarch64.tar.gz md-serve
+          rm md-serve
+
+          cp artifacts/md-serve-windows-x86_64/*-runner.exe md-serve.exe
+          zip md-serve-windows-x86_64.zip md-serve.exe
+          rm md-serve.exe
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "md-serve ${{ github.ref_name }}" \
+            --notes-file release-notes.md \
+            md-serve.jar \
+            md-serve-linux-x86_64.tar.gz \
+            md-serve-macos-x86_64.tar.gz \
+            md-serve-macos-aarch64.tar.gz \
+            md-serve-windows-x86_64.zip

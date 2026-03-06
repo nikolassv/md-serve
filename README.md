@@ -13,6 +13,32 @@ A Quarkus-based HTTP server that serves Markdown files from a configured directo
 - 404 and 500 error pages rendered through the template pipeline
 - Path traversal protection
 
+## Installation
+
+Download a pre-built release from the [GitHub Releases page](https://github.com/nikolassv/md-serve/releases).
+
+**Uber JAR** (any platform with Java 21):
+
+```sh
+java -jar md-serve.jar
+```
+
+**Native executables** (no JVM required):
+
+| Archive | Platform | Contains |
+|---|---|---|
+| `md-serve-linux-x86_64.tar.gz` | Linux x86_64 | `md-serve` |
+| `md-serve-macos-x86_64.tar.gz` | macOS Intel | `md-serve` |
+| `md-serve-macos-aarch64.tar.gz` | macOS Apple Silicon | `md-serve` |
+| `md-serve-windows-x86_64.zip` | Windows x86_64 | `md-serve.exe` |
+
+```sh
+# Linux / macOS
+tar -xzf md-serve-linux-x86_64.tar.gz
+chmod +x md-serve
+./md-serve
+```
+
 ## Quick start
 
 ```sh

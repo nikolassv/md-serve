@@ -51,6 +51,10 @@ work/                  tickets and specs
 - Do not add `Co-Authored-By` trailers to commit messages
 - Historical step specs live in `work/done/` — leave them as-is
 
+### CHANGELOG is mandatory before committing
+
+**Always update `CHANGELOG.md` under `[Unreleased]` before creating a commit.** Every user-visible or behavioural change must be recorded there. When a release tag is created, the `[Unreleased]` entries move to the new version section (e.g. `## [0.2.0] - 2026-xx-xx`) so the GitHub Actions release workflow can extract them. If the tag's version section is missing from `CHANGELOG.md`, the pipeline will fail.
+
 ### Documentation is mandatory before committing
 
 **Always update `docs/` before creating a commit.** This is a hard requirement, not optional. For every step:

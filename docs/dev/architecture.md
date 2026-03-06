@@ -118,6 +118,21 @@ Custom helpers are registered on the shared `Handlebars` instance inside `Templa
 |---|---|---|
 | `treeNav` | `{{{treeNav tree}}}` | Renders the `tree` context variable as a fully recursive, collapsible `<ul>` navigation tree. Directories become `<details>/<summary>` elements (opened automatically when active). Active nodes receive the `active` CSS class. Use triple braces to avoid HTML escaping. |
 
+## Release Pipeline
+
+The GitHub Actions workflow at `.github/workflows/release.yml` triggers on `v*` tag pushes and produces a GitHub Release containing:
+
+- **Uber JAR** (`md-serve.jar`) — built with `-Dquarkus.package.jar.type=uber-jar`; runnable with `java -jar md-serve.jar`
+- **Native executables** — built with `-Pnative` (Quarkus native profile) and `graalvm/setup-graalvm` on four runners:
+  - `ubuntu-latest` → `md-serve-linux-x86_64`
+  - `macos-13` → `md-serve-macos-x86_64`
+  - `macos-latest` (M-series) → `md-serve-macos-aarch64`
+  - `windows-latest` → `md-serve-windows-x86_64.exe`
+
+The release body is extracted from the `## [<version>]` section in `CHANGELOG.md` using `awk`. The workflow fails loudly if that section is missing.
+
+Only `secrets.GITHUB_TOKEN` is required — no additional repository secrets.
+
 ## Key Design Decisions
 
 - **Single route** — `GET /{path:.*}` handles files, directories, and errors; 404 for missing paths, 500 for unexpected failures.
