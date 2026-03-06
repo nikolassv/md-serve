@@ -2,7 +2,7 @@
 
 ## Overview
 
-md-serve is a Quarkus HTTP server that reads Markdown files from a configured directory and serves them as rendered HTML pages using a Handlebars template.
+md-serve is a Quarkus HTTP server that reads Markdown files from a configured directory and serves them as rendered HTML pages using role-based Handlebars templates.
 
 ## Request Flow
 
@@ -39,7 +39,7 @@ HTTP GET /{path}
 |---|---|---|
 | `MarkdownResource` | root | Single `GET /{path:.*}` JAX-RS route; delegates to renderers |
 | `PathResolver` | root | Translates URL path to absolute `Path`; validates it stays within source-dir |
-| `MdServeConfig` | root | MicroProfile Config mapping: `source-dir`, `template`, `max-tree-depth` |
+| `MdServeConfig` | root | MicroProfile Config mapping: `source-dir`, `max-tree-depth` |
 | `DocumentParser` | markdown | Reads a `.md` file; coordinates front matter parsing, Markdown rendering, and title resolution; returns a `ParsedDocument` record |
 | `FrontmatterParser` | markdown | Detects `--- ... ---` block, strips it from the source, parses it to `Map<String, Object>` |
 | `MarkdownRenderer` | markdown | Converts Markdown body text to an HTML fragment using Flexmark |
@@ -53,8 +53,8 @@ HTTP GET /{path}
 | `ErrorRenderer` | render | Renders 404 and 500 error pages through the template pipeline; falls back to plain text if the template itself fails |
 | `Breadcrumb` | template | DTO for a breadcrumb navigation entry (`label`, `path`) |
 | `TemplateContext` | template | Record holding all template variables passed to Handlebars |
-| `TemplateLoader` | template | Resolves which template to use: custom path from config, else `templates/default.hbs` on the classpath; registers Handlebars helpers |
-| `TemplateRenderer` | template | Loads the Handlebars template via `TemplateLoader`, merges a `TemplateContext`, returns full HTML |
+| `TemplateRegistry` | template | Loads all templates at startup from `<source-dir>/.md-serve/templates/` (user-provided) with per-role classpath fallbacks; exposes `get(name)` with fallback to `default`; registers Handlebars helpers |
+| `TemplateRenderer` | template | Resolves a named template from `TemplateRegistry`, merges a `TemplateContext`, returns full HTML |
 | `TreeNavHelper` | template | Handlebars `Helper` that recursively renders a `List<TreeNode>` into nested `<ul>` HTML using `<details>`/`<summary>` for directory collapse/expand |
 
 ## Template Context
@@ -95,24 +95,24 @@ Markdown files may optionally begin with a YAML front matter block:
 title: My Custom Title
 author: Ada Lovelace
 tags: [quarkus, markdown]
+template: custom
 ---
 
 # Document content starts here
 ```
 
-The parsed values are available in templates as `{{frontmatter.title}}`, `{{frontmatter.author}}`, etc. If a `title` key is present, it takes precedence over the H1-derived title in the `title` context property.
+The parsed values are available in templates as `{{frontmatter.title}}`, `{{frontmatter.author}}`, etc. If a `title` key is present, it takes precedence over the H1-derived title in the `title` context property. If a `template` key is present, that named template is used to render the file (falling back to `default` if not found).
 
 ## Configuration
 
 | Property | Description | Default |
 |---|---|---|
 | `md-serve.source-dir` | Directory containing Markdown files | `./docs` |
-| `md-serve.template` | Path to a custom Handlebars template file | built-in default |
 | `md-serve.max-tree-depth` | Maximum directory depth for the site navigation tree | `20` |
 
 ## Handlebars Helpers
 
-Custom helpers are registered on the `Handlebars` instance inside `TemplateLoader.handlebars()` before the template is compiled, so they are available in both the built-in default template and any custom template loaded from the file system.
+Custom helpers are registered on the shared `Handlebars` instance inside `TemplateRegistry` at startup, so they are available in all templates — bundled or user-provided.
 
 | Helper | Signature | Description |
 |---|---|---|
@@ -123,6 +123,7 @@ Custom helpers are registered on the `Handlebars` instance inside `TemplateLoade
 - **Single route** — `GET /{path:.*}` handles files, directories, and errors; 404 for missing paths, 500 for unexpected failures.
 - **No database** — purely file-system driven; files are read on each request.
 - **Path traversal safety** — `PathResolver` rejects any resolved path outside `source-dir`.
-- **Template override** — `TemplateLoader` checks `md-serve.template` first; falls back to `templates/default.hbs` on the classpath.
+- **Convention-based template discovery** — `TemplateRegistry` scans `<source-dir>/.md-serve/templates/` at startup. Three roles are defined (`default`, `directory`, `error`); each has a bundled classpath fallback. Additional `.hbs` files in that directory are loaded by name for per-file front matter overrides. The `.md-serve/` directory is hidden from the router by the dot-prefix rule.
+- **Role-based dispatch** — `FileRenderer` uses the `default` role (or `template` from front matter), `DirectoryRenderer` uses `directory`, and `ErrorRenderer` uses `error`. Unknown names fall back to `default`.
 - **Title resolution order** — `frontmatter.title` > first H1 in content > filename.
 - **Subpackage structure** — code is split into `markdown` (parsing), `render` (orchestration), and `template` (output) packages to keep concerns separate.

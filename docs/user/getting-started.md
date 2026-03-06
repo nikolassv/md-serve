@@ -62,3 +62,31 @@ Run:
 ```
 
 Open `http://localhost:8080/hello` — you will see the rendered page with a styled heading and paragraph.
+
+## Custom templates
+
+To customise the look of your pages, create `.hbs` (Handlebars) files in a `.md-serve/templates/` directory inside your source directory:
+
+```
+my-docs/
+  .md-serve/
+    templates/
+      default.hbs    ← overrides the page template
+      directory.hbs  ← overrides the directory listing template
+      error.hbs      ← overrides the error page template
+  hello.md
+```
+
+Any file you omit falls back to the bundled default. A minimal custom `default.hbs`:
+
+```hbs
+<!DOCTYPE html>
+<html>
+<head><title>{{title}}</title></head>
+<body>
+  {{{content}}}
+</body>
+</html>
+```
+
+See [configuration.md](configuration.md) for the full list of available template variables and the `treeNav` helper.

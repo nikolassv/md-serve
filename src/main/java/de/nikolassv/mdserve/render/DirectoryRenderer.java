@@ -3,6 +3,7 @@ package de.nikolassv.mdserve.render;
 import de.nikolassv.mdserve.template.Breadcrumb;
 import de.nikolassv.mdserve.template.TemplateContext;
 import de.nikolassv.mdserve.template.TemplateRenderer;
+import de.nikolassv.mdserve.template.TemplateRole;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -22,6 +23,6 @@ public class DirectoryRenderer {
         List<FileEntry> files = directoryIndexer.list(directory, "/" + urlPath);
         TemplateContext ctx = new TemplateContext(dirName, null, files,
                 Breadcrumb.listFor(urlPath), Collections.emptyMap(), treeBuilder.build("/" + urlPath));
-        return templateRenderer.render(ctx);
+        return templateRenderer.render(ctx, TemplateRole.DIRECTORY.id());
     }
 }

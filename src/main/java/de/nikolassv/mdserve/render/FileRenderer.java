@@ -4,6 +4,7 @@ import de.nikolassv.mdserve.markdown.DocumentParser;
 import de.nikolassv.mdserve.template.Breadcrumb;
 import de.nikolassv.mdserve.template.TemplateContext;
 import de.nikolassv.mdserve.template.TemplateRenderer;
+import de.nikolassv.mdserve.template.TemplateRole;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -27,8 +28,9 @@ public class FileRenderer {
 
     public String render(Path filePath, String urlPath) throws IOException {
         DocumentParser.ParsedDocument doc = documentParser.parse(filePath);
+        String templateName = doc.frontmatter().getOrDefault("template", TemplateRole.DEFAULT.id()).toString();
         TemplateContext ctx = new TemplateContext(doc.title(), doc.content(), null,
                 Breadcrumb.listFor(urlPath), doc.frontmatter(), treeBuilder.build("/" + urlPath));
-        return templateRenderer.render(ctx);
+        return templateRenderer.render(ctx, templateName);
     }
 }

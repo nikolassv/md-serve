@@ -24,7 +24,7 @@ class TemplateRendererTest {
                 Collections.emptyMap(),
                 List.of()
         );
-        String html = renderer.render(ctx);
+        String html = renderer.render(ctx, "default");
 
         assertTrue(html.contains("<title>My Title</title>"), "expected title tag");
         assertTrue(html.contains("<p>Hello</p>"), "expected content");

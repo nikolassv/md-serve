@@ -18,23 +18,20 @@ import static org.hamcrest.Matchers.not;
 class MarkdownResourceCustomTemplateTest {
 
     static Path tempDir;
-    static Path templateFile;
 
     public static class Profile implements io.quarkus.test.junit.QuarkusTestProfile {
         @Override
         public Map<String, String> getConfigOverrides() {
             try {
                 tempDir = Files.createTempDirectory("md-serve-custom-tpl-test");
-                templateFile = tempDir.resolve("custom.hbs");
-                Files.writeString(templateFile, "CUSTOM:{{title}}|{{{content}}}");
+                Path templateDir = Files.createDirectories(
+                        tempDir.resolve(".md-serve/templates"));
+                Files.writeString(templateDir.resolve("default.hbs"), "CUSTOM:{{title}}|{{{content}}}");
                 Files.writeString(tempDir.resolve("page.md"), "# My Page\n\nHello.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return Map.of(
-                "md-serve.source-dir", tempDir.toString(),
-                "md-serve.template", templateFile.toString()
-            );
+            return Map.of("md-serve.source-dir", tempDir.toString());
         }
     }
 

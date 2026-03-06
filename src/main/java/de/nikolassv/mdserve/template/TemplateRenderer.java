@@ -9,14 +9,14 @@ import java.io.IOException;
 @ApplicationScoped
 public class TemplateRenderer {
 
-    private final TemplateLoader templateLoader;
+    private final TemplateRegistry registry;
 
     @Inject
-    public TemplateRenderer(TemplateLoader templateLoader) {
-        this.templateLoader = templateLoader;
+    public TemplateRenderer(TemplateRegistry registry) {
+        this.registry = registry;
     }
 
-    public String render(TemplateContext ctx) {
+    public String render(TemplateContext ctx, String templateName) {
         Context context = Context.newBuilder(ctx)
                 .combine("title", ctx.title())
                 .combine("content", ctx.content())
@@ -26,7 +26,7 @@ public class TemplateRenderer {
                 .combine("tree", ctx.tree())
                 .build();
         try {
-            return templateLoader.get().apply(context);
+            return registry.get(templateName).apply(context);
         } catch (IOException e) {
             throw new IllegalStateException("Template rendering failed", e);
         }

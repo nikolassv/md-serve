@@ -5,7 +5,7 @@ import de.nikolassv.mdserve.markdown.DocumentParser;
 import de.nikolassv.mdserve.markdown.FrontmatterParser;
 import de.nikolassv.mdserve.markdown.MarkdownRenderer;
 import de.nikolassv.mdserve.markdown.TitleResolver;
-import de.nikolassv.mdserve.template.TemplateLoader;
+import de.nikolassv.mdserve.template.TemplateRegistry;
 import de.nikolassv.mdserve.template.TemplateRenderer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,10 +27,9 @@ class FileRendererTest {
     void setUp() {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return tempDir.toString(); }
-            public Optional<String> template() { return Optional.empty(); }
             public int maxTreeDepth() { return 20; }
         };
-        TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateLoader(config));
+        TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateRegistry(config));
         DocumentParser documentParser = new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver());
         DirectoryTreeBuilder treeBuilder = new DirectoryTreeBuilder(config);
         renderer = new FileRenderer(documentParser, templateRenderer, treeBuilder);
@@ -68,5 +66,32 @@ class FileRendererTest {
         String html = renderer.render(file, "/content.md");
         assertTrue(html.contains("<h1>Hello</h1>"));
         assertTrue(html.contains("<strong>Bold</strong>"));
+    }
+
+    @Test
+    void frontmatterTemplateOverrideUsesNamedTemplate() throws IOException {
+        Path tplDir = Files.createDirectories(tempDir.resolve(".md-serve/templates"));
+        Files.writeString(tplDir.resolve("custom.hbs"), "NAMED-TPL:{{title}}");
+        // Build a fresh renderer so TemplateRegistry picks up the newly written template
+        MdServeConfig config = new MdServeConfig() {
+            public String sourceDir() { return tempDir.toString(); }
+            public int maxTreeDepth() { return 20; }
+        };
+        FileRenderer freshRenderer = new FileRenderer(
+                new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver()),
+                new TemplateRenderer(new TemplateRegistry(config)),
+                new DirectoryTreeBuilder(config));
+        Path file = tempDir.resolve("override.md");
+        Files.writeString(file, "---\ntemplate: custom\n---\n# Override Page\n\nContent.");
+        String html = freshRenderer.render(file, "/override.md");
+        assertTrue(html.contains("NAMED-TPL:Override Page"), "should use template named in front matter");
+    }
+
+    @Test
+    void noFrontmatterTemplateUsesDefault() throws IOException {
+        Path file = tempDir.resolve("plain.md");
+        Files.writeString(file, "# Plain Page\n\nContent.");
+        String html = renderer.render(file, "/plain.md");
+        assertTrue(html.contains("<!DOCTYPE html>"), "should use the bundled default template");
     }
 }

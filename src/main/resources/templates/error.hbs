@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #222;
+            background: #fff;
+            margin: 0;
+            padding: 0 1rem 3rem;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        nav.breadcrumb {
+            font-size: 0.875rem;
+            color: #666;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 1.5rem;
+        }
+
+        nav.breadcrumb a { color: #0969da; text-decoration: none; }
+        nav.breadcrumb a:hover { text-decoration: underline; }
+        nav.breadcrumb .sep { margin: 0 0.35em; color: #999; }
+        nav.breadcrumb .current { color: #444; }
+        nav.breadcrumb .home { color: #0969da; text-decoration: none; }
+        nav.breadcrumb .home:hover { text-decoration: underline; }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #e5e5e5; padding-bottom: 0.3em; line-height: 1.25; margin-top: 1.5em; margin-bottom: 0.5em; color: #cf222e; }
+
+        a { color: #0969da; }
+        a:hover { text-decoration: underline; }
+
+        p { margin: 0 0 1em; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <nav class="breadcrumb">
+        <a class="home" href="/">Home</a>
+        {{#each breadcrumbs}}
+        <span class="sep">/</span>
+        {{#if @last}}<span class="current">{{label}}</span>{{else}}<a href="{{path}}">{{label}}</a>{{/if}}
+        {{/each}}
+    </nav>
+
+    <main>
+        <h1>{{title}}</h1>
+        {{{content}}}
+    </main>
+
+</div>
+</body>
+</html>

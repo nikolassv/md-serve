@@ -3,6 +3,7 @@ package de.nikolassv.mdserve.render;
 import de.nikolassv.mdserve.template.Breadcrumb;
 import de.nikolassv.mdserve.template.TemplateContext;
 import de.nikolassv.mdserve.template.TemplateRenderer;
+import de.nikolassv.mdserve.template.TemplateRole;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
@@ -33,7 +34,7 @@ public class ErrorRenderer {
         try {
             TemplateContext ctx = new TemplateContext(title, content, null,
                     Breadcrumb.listFor(urlPath), Collections.emptyMap(), treeBuilder.build(null));
-            String html = templateRenderer.render(ctx);
+            String html = templateRenderer.render(ctx, TemplateRole.ERROR.id());
             return Response.status(status).type(MediaType.TEXT_HTML).entity(html).build();
         } catch (Exception e) {
             LOG.error("Template rendering failed for error page", e);
