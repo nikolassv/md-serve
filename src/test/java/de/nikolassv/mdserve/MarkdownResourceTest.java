@@ -28,6 +28,9 @@ class MarkdownResourceTest {
                 Files.writeString(tempDir.resolve("fm.md"),
                         "---\ntitle: Front Matter Title\n---\n# H1 Title\n\nBody text.");
                 Files.writeString(tempDir.resolve("h1only.md"), "# H1 Title\n\nNo front matter.");
+                Files.writeString(tempDir.resolve("style.css"), "body { color: red; }");
+                Files.write(tempDir.resolve("image.png"),
+                        new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A});
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -101,6 +104,30 @@ class MarkdownResourceTest {
             .when().get("/subdir")
             .then().statusCode(200)
             .body(containsString("<!DOCTYPE html>"));
+    }
+
+    @Test
+    void cssAssetServedWithCorrectContentType() {
+        given()
+            .when().get("/style.css")
+            .then().statusCode(200)
+            .contentType(containsString("text/css"))
+            .body(containsString("color: red"));
+    }
+
+    @Test
+    void binaryAssetServedWithCorrectContentType() {
+        given()
+            .when().get("/image.png")
+            .then().statusCode(200)
+            .contentType(containsString("image/png"));
+    }
+
+    @Test
+    void nonExistentAssetReturns404() {
+        given()
+            .when().get("/nonexistent.gif")
+            .then().statusCode(404);
     }
 
 }

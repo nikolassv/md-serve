@@ -1,5 +1,6 @@
 package de.nikolassv.mdserve;
 
+import de.nikolassv.mdserve.render.AssetRenderer;
 import de.nikolassv.mdserve.render.DirectoryRenderer;
 import de.nikolassv.mdserve.render.ErrorRenderer;
 import de.nikolassv.mdserve.render.FileRenderer;
@@ -21,30 +22,41 @@ public class MarkdownResource {
 
     @Inject PathResolver pathResolver;
     @Inject FileRenderer fileRenderer;
+    @Inject AssetRenderer assetRenderer;
     @Inject DirectoryRenderer directoryRenderer;
     @Inject ErrorRenderer errorRenderer;
 
     @GET
     @Path("{path:.*}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.WILDCARD)
     public Response serve(@PathParam("path") String path) {
         PathResolver.Result result = pathResolver.resolve(path);
         try {
             return switch (result.kind()) {
                 case FILE -> {
-                    try {
-                        yield Response.ok(fileRenderer.render(result.path(), path)).build();
-                    } catch (IOException e) {
-                        LOG.error("Failed to read file: " + result.path(), e);
-                        yield errorRenderer.renderServerError(path);
+                    if (isMarkdown(result.path())) {
+                        try {
+                            yield Response.ok(fileRenderer.render(result.path(), path))
+                                    .type(MediaType.TEXT_HTML).build();
+                        } catch (IOException e) {
+                            LOG.error("Failed to read file: " + result.path(), e);
+                            yield errorRenderer.renderServerError(path);
+                        }
+                    } else {
+                        yield assetRenderer.render(result.path());
                     }
                 }
-                case DIRECTORY -> Response.ok(directoryRenderer.render(result.path(), path)).build();
+                case DIRECTORY -> Response.ok(directoryRenderer.render(result.path(), path))
+                        .type(MediaType.TEXT_HTML).build();
                 case NOT_FOUND -> errorRenderer.renderNotFound(path);
             };
         } catch (Exception e) {
             LOG.error("Unexpected error serving: " + path, e);
             return errorRenderer.renderServerError(path);
         }
+    }
+
+    private static boolean isMarkdown(java.nio.file.Path path) {
+        return path.getFileName().toString().toLowerCase().endsWith(".md");
     }
 }
