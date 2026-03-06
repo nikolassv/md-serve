@@ -7,11 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- Native image: `com.vladsch.flexmark.util.sequence.Escaping` initialised at run time to avoid GraalVM `Random`-in-heap error (`--initialize-at-run-time`)
-- Native image: bundled Handlebars templates (`templates/*.hbs`) now included in the native binary via `quarkus.native.resources.includes`
-- Native image: `FileEntry` and `Breadcrumb` records annotated with `@RegisterForReflection` so Handlebars can resolve their accessor methods (`name()`, `path()`, `label()`) at runtime; without this, directory listings rendered empty and breadcrumbs were blank
+## [v0.1.0]
 
 ### Added
 
@@ -30,4 +26,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI workflow (`.github/workflows/ci.yml`): runs `mvn verify` on every push to `main` and on every pull request
 
 [Unreleased]: https://github.com/nikolassv/md-serve/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/nikolassv/md-serve/releases/tag/v0.1.0
+[v0.1.0]: https://github.com/nikolassv/md-serve/releases/tag/v0.1.0
