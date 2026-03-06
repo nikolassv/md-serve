@@ -24,6 +24,14 @@ public class PathResolver {
     public Result resolve(String urlPath) {
         // Normalize and strip leading slash to make it relative
         String stripped = urlPath == null ? "" : urlPath.replaceAll("^/+", "");
+
+        // Security: reject any path segment that starts with a dot
+        for (String segment : stripped.split("/")) {
+            if (segment.startsWith(".")) {
+                return new Result(Kind.NOT_FOUND, sourceDir.resolve(stripped));
+            }
+        }
+
         Path candidate = sourceDir.resolve(stripped).normalize();
 
         // Security: reject traversal outside source-dir

@@ -55,4 +55,19 @@ class DirectoryIndexerTest {
         List<FileEntry> entries = indexer.list(tempDir, "/docs");
         assertEquals("/docs/file.md", entries.get(0).path());
     }
+
+    @Test
+    void dotPrefixedEntriesAreExcluded() throws IOException {
+        Files.writeString(tempDir.resolve(".env"), "secret");
+        Files.createDirectory(tempDir.resolve(".hidden"));
+        Files.writeString(tempDir.resolve("readme.md"), "# Readme");
+        Files.createDirectory(tempDir.resolve("subdir"));
+
+        List<FileEntry> entries = indexer.list(tempDir, "/");
+        List<String> names = entries.stream().map(FileEntry::name).toList();
+        assertFalse(names.contains(".env"));
+        assertFalse(names.contains(".hidden"));
+        assertTrue(names.contains("readme.md"));
+        assertTrue(names.contains("subdir"));
+    }
 }

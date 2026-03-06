@@ -21,6 +21,7 @@ public class DirectoryIndexer {
             stream.sorted(Comparator.comparing(p -> p.getFileName().toString()))
                   .forEach(p -> {
                       String name = p.getFileName().toString();
+                      if (name.startsWith(".")) return;
                       String entryPath = urlBase.endsWith("/")
                               ? urlBase + name
                               : urlBase + "/" + name;

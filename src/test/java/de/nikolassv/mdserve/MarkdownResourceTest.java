@@ -31,6 +31,7 @@ class MarkdownResourceTest {
                 Files.writeString(tempDir.resolve("style.css"), "body { color: red; }");
                 Files.write(tempDir.resolve("image.png"),
                         new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A});
+                Files.writeString(tempDir.resolve(".secret"), "hidden content");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -127,6 +128,13 @@ class MarkdownResourceTest {
     void nonExistentAssetReturns404() {
         given()
             .when().get("/nonexistent.gif")
+            .then().statusCode(404);
+    }
+
+    @Test
+    void hiddenFileReturns404() {
+        given()
+            .when().get("/.secret")
             .then().statusCode(404);
     }
 

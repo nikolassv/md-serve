@@ -74,4 +74,30 @@ class PathResolverTest {
         PathResolver.Result result = resolver.resolve("/does-not-exist");
         assertEquals(PathResolver.Kind.NOT_FOUND, result.kind());
     }
+
+    @Test
+    void dotPrefixedFileIsRejected() {
+        PathResolver.Result result = resolver.resolve("/.env");
+        assertEquals(PathResolver.Kind.NOT_FOUND, result.kind());
+    }
+
+    @Test
+    void dotPrefixedDirectorySegmentIsRejected() throws IOException {
+        Path hidden = tempDir.resolve(".git").resolve("config");
+        Files.createDirectories(hidden.getParent());
+        Files.writeString(hidden, "secret");
+
+        PathResolver.Result result = resolver.resolve("/.git/config");
+        assertEquals(PathResolver.Kind.NOT_FOUND, result.kind());
+    }
+
+    @Test
+    void dotSegmentAtDepthIsRejected() throws IOException {
+        Path hidden = tempDir.resolve("docs").resolve(".hidden").resolve("page.md");
+        Files.createDirectories(hidden.getParent());
+        Files.writeString(hidden, "# Hidden");
+
+        PathResolver.Result result = resolver.resolve("/docs/.hidden/page.md");
+        assertEquals(PathResolver.Kind.NOT_FOUND, result.kind());
+    }
 }
