@@ -50,9 +50,44 @@ jobs:
           name: md-serve-uber-jar
           path: target/*-runner.jar
 
+  build-native:
+    name: Build native (${{ matrix.os }})
+    needs: [release-notes]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: md-serve-linux-x86_64
+            binary-glob: target/*-runner
+          - os: macos-latest
+            artifact: md-serve-macos-aarch64
+            binary-glob: target/*-runner
+          - os: windows-latest
+            artifact: md-serve-windows-x86_64
+            binary-glob: target/*-runner.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm-community'
+          cache: 'maven'
+
+      - name: Build native binary
+        shell: bash
+        run: ./mvnw -B package -Pnative -DskipTests
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.binary-glob }}
+
   release:
     name: Create GitHub Release
-    needs: [build-jar, release-notes]
+    needs: [build-jar, build-native, release-notes]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -68,6 +103,18 @@ jobs:
         run: |
           cp artifacts/md-serve-uber-jar/*-runner.jar md-serve.jar
 
+          cp artifacts/md-serve-linux-x86_64/*-runner md-serve
+          tar -czf md-serve-linux-x86_64.tar.gz md-serve
+          rm md-serve
+
+          cp artifacts/md-serve-macos-aarch64/*-runner md-serve
+          tar -czf md-serve-macos-aarch64.tar.gz md-serve
+          rm md-serve
+
+          cp artifacts/md-serve-windows-x86_64/*-runner.exe md-serve.exe
+          zip md-serve-windows-x86_64.zip md-serve.exe
+          rm md-serve.exe
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,4 +122,7 @@ jobs:
           gh release create "${{ github.ref_name }}" \
             --title "md-serve ${{ github.ref_name }}" \
             --notes-file artifacts/md-serve-release-notes/release-notes.md \
-            md-serve.jar
+            md-serve.jar \
+            md-serve-linux-x86_64.tar.gz \
+            md-serve-macos-aarch64.tar.gz \
+            md-serve-windows-x86_64.zip
