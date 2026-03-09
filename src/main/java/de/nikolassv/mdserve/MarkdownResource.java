@@ -14,6 +14,8 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
 
 @Path("/")
 public class MarkdownResource {
@@ -46,8 +48,17 @@ public class MarkdownResource {
                         yield assetRenderer.render(result.path());
                     }
                 }
-                case DIRECTORY -> Response.ok(directoryRenderer.render(result.path(), path))
-                        .type(MediaType.TEXT_HTML).build();
+                case DIRECTORY -> {
+                    java.nio.file.Path indexFile = result.path().resolve("index.md");
+                    if (Files.isRegularFile(indexFile)) {
+                        String base = path.isEmpty() ? "" : "/" + path.replaceAll("/+$", "");
+                        yield Response.status(301)
+                                .location(URI.create(base + "/index.md"))
+                                .build();
+                    }
+                    yield Response.ok(directoryRenderer.render(result.path(), path))
+                            .type(MediaType.TEXT_HTML).build();
+                }
                 case NOT_FOUND -> errorRenderer.renderNotFound(path);
             };
         } catch (Exception e) {

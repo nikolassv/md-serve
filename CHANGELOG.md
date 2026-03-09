@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Directories containing an `index.md` file now redirect (HTTP 301) to `/<path>/index.md` instead of showing a directory listing
+
 ## [0.1.0] - 2026-03-09
 
 ### Added

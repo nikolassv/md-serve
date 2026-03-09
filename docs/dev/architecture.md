@@ -18,9 +18,11 @@ HTTP GET /{path}
      │  maps URL path → file system path under source-dir
      │  strips/adds .md extension, normalizes, prevents path traversal
      │
-     ├─ path is a directory? → DirectoryRenderer
-     │                              DirectoryIndexer lists .md files
-     │                              TemplateRenderer renders directory listing
+     ├─ path is a directory? → index.md present? → 301 redirect to /<path>/index.md
+     │                        │
+     │                        └─ no index.md  → DirectoryRenderer
+     │                                              DirectoryIndexer lists .md files
+     │                                              TemplateRenderer renders directory listing
      │
      ├─ path is a file?      → FileRenderer
      │                              DocumentParser reads and parses .md:
@@ -156,6 +158,7 @@ Three issues must be kept in mind when building native executables:
 ## Key Design Decisions
 
 - **Single route** — `GET /{path:.*}` handles files, directories, and errors; 404 for missing paths, 500 for unexpected failures.
+- **Index file redirect** — when a directory request resolves and the directory contains `index.md`, `MarkdownResource` returns a `301 Moved Permanently` to `/<path>/index.md` before invoking `DirectoryRenderer`. The check lives in the resource rather than in `PathResolver` to keep path resolution free of HTTP semantics.
 - **No database** — purely file-system driven; files are read on each request.
 - **Path traversal safety** — `PathResolver` rejects any resolved path outside `source-dir`.
 - **Convention-based template discovery** — `TemplateRegistry` scans `<source-dir>/.md-serve/templates/` at startup. Three roles are defined (`default`, `directory`, `error`); each has a bundled classpath fallback. Additional `.hbs` files in that directory are loaded by name for per-file front matter overrides. The `.md-serve/` directory is hidden from the router by the dot-prefix rule.

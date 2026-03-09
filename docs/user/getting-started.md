@@ -56,9 +56,9 @@ md-serve.source-dir=/path/to/your/markdown/files
 
 ## 4. Open your browser
 
-Navigate to `http://localhost:8080`. If your source directory contains a `README.md` or `index.md`, open it directly at `http://localhost:8080/README` or `http://localhost:8080/index`.
+Navigate to `http://localhost:8080`. If your source directory contains an `index.md`, visiting `http://localhost:8080/` will automatically redirect (301) to `http://localhost:8080/index.md`, making it the landing page for that directory.
 
-Subdirectories are listed automatically. Clicking a directory shows the files it contains; clicking a file renders it as HTML.
+Subdirectories are listed automatically. If a subdirectory contains an `index.md`, navigating to that directory will redirect to its `index.md`. Clicking a file renders it as HTML.
 
 ## 5. Minimal example
 

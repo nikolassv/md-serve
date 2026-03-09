@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 
 @QuarkusTest
 @TestProfile(MarkdownResourceTest.Profile.class)
@@ -24,6 +25,8 @@ class MarkdownResourceTest {
             try {
                 tempDir = Files.createTempDirectory("md-serve-test");
                 Files.createDirectory(tempDir.resolve("subdir"));
+                Files.createDirectory(tempDir.resolve("indexed"));
+                Files.writeString(tempDir.resolve("indexed").resolve("index.md"), "# Index Page");
                 Files.writeString(tempDir.resolve("hello.md"), "# Hello\n\nSome content.");
                 Files.writeString(tempDir.resolve("fm.md"),
                         "---\ntitle: Front Matter Title\n---\n# H1 Title\n\nBody text.");
@@ -136,6 +139,32 @@ class MarkdownResourceTest {
         given()
             .when().get("/.secret")
             .then().statusCode(404);
+    }
+
+    @Test
+    void directoryWithIndexMdRedirects301() {
+        given()
+            .redirects().follow(false)
+            .when().get("/indexed")
+            .then().statusCode(301)
+            .header("Location", endsWith("/indexed/index.md"));
+    }
+
+    @Test
+    void directoryWithIndexMdAndTrailingSlashRedirects301() {
+        given()
+            .redirects().follow(false)
+            .when().get("/indexed/")
+            .then().statusCode(301)
+            .header("Location", endsWith("/indexed/index.md"));
+    }
+
+    @Test
+    void directoryWithoutIndexMdShowsListing() {
+        given()
+            .when().get("/subdir")
+            .then().statusCode(200)
+            .body(containsString("<!DOCTYPE html>"));
     }
 
     @Test
