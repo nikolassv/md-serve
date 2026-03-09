@@ -75,7 +75,4 @@ jobs:
           gh release create "${{ github.ref_name }}" \
             --title "md-serve ${{ github.ref_name }}" \
             --notes-file artifacts/md-serve-release-notes \
-            md-serve.jar \
-            md-serve-linux-x86_64.tar.gz \
-            md-serve-macos-aarch64.tar.gz \
-            md-serve-windows-x86_64.zip
+            md-serve.jar
