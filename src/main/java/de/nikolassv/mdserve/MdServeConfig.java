@@ -11,4 +11,7 @@ public interface MdServeConfig {
 
     @WithDefault("20")
     int maxTreeDepth();
+
+    @WithDefault("8080")
+    int port();
 }

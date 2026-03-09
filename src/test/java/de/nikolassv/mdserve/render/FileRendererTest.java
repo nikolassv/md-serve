@@ -28,6 +28,7 @@ class FileRendererTest {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return tempDir.toString(); }
             public int maxTreeDepth() { return 20; }
+            public int port() { return 8080; }
         };
         TemplateRenderer templateRenderer = new TemplateRenderer(new TemplateRegistry(config));
         DocumentParser documentParser = new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver());
@@ -76,6 +77,7 @@ class FileRendererTest {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return tempDir.toString(); }
             public int maxTreeDepth() { return 20; }
+            public int port() { return 8080; }
         };
         FileRenderer freshRenderer = new FileRenderer(
                 new DocumentParser(new FrontmatterParser(), new MarkdownRenderer(), new TitleResolver()),

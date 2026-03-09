@@ -145,6 +145,7 @@ class DirectoryTreeBuilderTest {
         return new MdServeConfig() {
             @Override public String sourceDir() { return dir.toString(); }
             @Override public int maxTreeDepth() { return depth; }
+            @Override public int port() { return 8080; }
         };
     }
 }

@@ -23,6 +23,7 @@ class TemplateRegistryTest {
         MdServeConfig config = new MdServeConfig() {
             public String sourceDir() { return sourceDir; }
             public int maxTreeDepth() { return 20; }
+            public int port() { return 8080; }
         };
         return new TemplateRegistry(config);
     }
