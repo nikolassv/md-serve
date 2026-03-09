@@ -74,5 +74,5 @@ jobs:
         run: |
           gh release create "${{ github.ref_name }}" \
             --title "md-serve ${{ github.ref_name }}" \
-            --notes-file artifacts/md-serve-release-notes \
+            --notes-file artifacts/md-serve-release-notes/release-notes.md \
             md-serve.jar
