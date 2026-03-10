@@ -15,6 +15,8 @@ A Quarkus-based HTTP server that serves Markdown files from a configured directo
 
 ## Installation
 
+### Manual download
+
 Download a pre-built release from the [GitHub Releases page](https://github.com/nikolassv/md-serve/releases).
 
 **Uber JAR** (any platform with Java 21):
@@ -37,6 +39,26 @@ java -jar md-serve.jar
 tar -xzf md-serve-linux-x86_64.tar.gz
 chmod +x md-serve
 ./md-serve
+```
+
+### jbang
+
+Install [jbang](https://www.jbang.dev/download/) once, then run md-serve directly — no manual download needed:
+
+```sh
+jbang md-serve@nikolassv/md-serve
+```
+
+To install as a named command available system-wide:
+
+```sh
+jbang app install md-serve@nikolassv/md-serve
+md-serve
+```
+To upgrade from the latest release JAR on Github:
+
+```sh
+jbang app install --force md-serve@nikolassv/md-serve
 ```
 
 ## Quick start

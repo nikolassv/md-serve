@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `jbang-catalog.json` for running and installing md-serve via jbang (`jbang md-serve@nikolassv/md-serve`)
 - Directories containing an `index.md` file now redirect (HTTP 301) to `/<path>/index.md` instead of showing a directory listing
 - `md-serve.port` configuration property to set the HTTP listen port (default: `8080`)
 - Custom ASCII art startup banner

@@ -1,0 +1,9 @@
+{
+  "aliases": {
+    "md-serve": {
+      "script-ref": "https://github.com/nikolassv/md-serve/releases/latest/download/md-serve.jar",
+      "description": "Serve a directory of Markdown files as rendered HTML",
+      "java": "21+"
+    }
+  }
+}
