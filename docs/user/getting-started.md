@@ -101,6 +101,26 @@ md-serve -Dmd-serve.source-dir=./my-docs
 
 Open `http://localhost:8080/hello` — you will see the rendered page with a styled heading and paragraph.
 
+## Supported Markdown features
+
+md-serve renders standard CommonMark Markdown plus several extensions:
+
+- **Tables** — GFM-style pipe tables
+- **Strikethrough** — `~~text~~`
+- **Autolinks** — bare URLs are automatically linked
+- **Definition lists** — term on its own line followed by `: definition`:
+
+  ```markdown
+  Term
+  : The definition of the term
+
+  Another Term
+  : First definition
+  : Second definition
+  ```
+
+  Renders as a `<dl>/<dt>/<dd>` HTML structure.
+
 ## Custom templates
 
 To customise the look of your pages, create `.hbs` (Handlebars) files in a `.md-serve/templates/` directory inside your source directory:

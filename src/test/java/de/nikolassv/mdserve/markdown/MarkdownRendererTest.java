@@ -58,4 +58,18 @@ class MarkdownRendererTest {
         String html = renderer.render("just plain text");
         assertTrue(html.contains("<p>just plain text</p>"), "expected plain text in <p>, got: " + html);
     }
+
+    @Test
+    void definitionListRendersAsDlDtDd() {
+        String html = renderer.render("Term\n: Definition text\n");
+        assertTrue(html.contains("<dl>"), "expected <dl>, got: " + html);
+        assertTrue(html.contains("<dt>"), "expected <dt>, got: " + html);
+        assertTrue(html.contains("<dd>"), "expected <dd>, got: " + html);
+    }
+
+    @Test
+    void multipleDefinitionsForOneTermRendersMultipleDd() {
+        String html = renderer.render("Term\n: First definition\n: Second definition\n");
+        assertTrue(html.indexOf("<dd>") != html.lastIndexOf("<dd>"), "expected multiple <dd> elements, got: " + html);
+    }
 }

@@ -1,6 +1,7 @@
 package de.nikolassv.mdserve.markdown;
 
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.definition.DefinitionExtension;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
@@ -21,7 +22,8 @@ public class MarkdownRenderer {
         options.set(Parser.EXTENSIONS, List.of(
                 TablesExtension.create(),
                 StrikethroughExtension.create(),
-                AutolinkExtension.create()
+                AutolinkExtension.create(),
+                DefinitionExtension.create()
         ));
         this.parser = Parser.builder(options).build();
         this.renderer = HtmlRenderer.builder(options).build();

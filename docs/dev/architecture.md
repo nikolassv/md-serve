@@ -44,7 +44,7 @@ HTTP GET /{path}
 | `MdServeConfig` | root | MicroProfile Config mapping: `source-dir`, `max-tree-depth` |
 | `DocumentParser` | markdown | Reads a `.md` file; coordinates front matter parsing, Markdown rendering, and title resolution; returns a `ParsedDocument` record |
 | `FrontmatterParser` | markdown | Detects `--- ... ---` block, strips it from the source, parses it to `Map<String, Object>` |
-| `MarkdownRenderer` | markdown | Converts Markdown body text to an HTML fragment using Flexmark |
+| `MarkdownRenderer` | markdown | Converts Markdown body text to an HTML fragment using Flexmark with the Tables, Strikethrough, Autolink, and DefinitionList extensions |
 | `TitleResolver` | markdown | Derives a page title: `frontmatter.title` > first H1 in HTML > filename |
 | `FileEntry` | render | DTO for a directory listing entry (`name`, `path`, `title`) |
 | `TreeNode` | render | Record representing one node in the site navigation tree (`name`, `path`, `directory`, `active`, `children`) |
