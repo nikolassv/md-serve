@@ -2,6 +2,10 @@
 
 A Quarkus-based HTTP server that serves Markdown files from a configured directory as rendered HTML.
 
+You have a folder full of Markdown files — notes, project docs, a personal wiki — and you want to read them in a browser without uploading them anywhere or wrestling with a static-site generator. md-serve is a single binary you drop into a directory and run: it turns your `.md` files into clean HTML pages, complete with navigation, breadcrumbs, and templating, and serves them locally over HTTP. No build step, no cloud account, no configuration required to get started.
+
+It's the right tool when you want a lightweight, private, local web view of your Markdown without committing to a full documentation platform. Developers reach for it to browse their own notes or internal team wikis during development; it also works well as a small self-hosted docs server for projects that don't need the weight of GitBook or MkDocs.
+
 ## Features
 
 - Serves `.md` files as styled HTML pages via Handlebars templates
@@ -75,6 +79,7 @@ Open `http://localhost:8080`. Serves the current working directory by default.
 |---|---|---|
 | `md-serve.source-dir` | `.` | Directory of Markdown files to serve |
 | `md-serve.max-tree-depth` | `20` | Maximum directory depth for the navigation tree |
+| `md-serve.port` | `int` | `8080` | TCP port the HTTP server listens on. |
 
 Set properties in `src/main/resources/application.properties` or on the command line with `-D<property>=<value>`.
 

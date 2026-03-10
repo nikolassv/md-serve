@@ -2,7 +2,9 @@
 
 md-serve is a small HTTP server that reads Markdown files from a directory on disk and serves them as styled HTML pages in your browser. Point it at any folder of `.md` files and you have an instant local documentation site — no build step, no static site generator.
 
-## 1. Download a pre-built release (recommended)
+## Installation
+
+### Download a pre-built release
 
 Pre-built artifacts are available on the [GitHub Releases page](https://github.com/nikolassv/md-serve/releases):
 
@@ -22,9 +24,27 @@ tar -xzf md-serve-linux-x86_64.tar.gz
 chmod +x md-serve
 ```
 
-Then jump to [Run](#3-run).
+### Install with jbang
 
-## 2. Build from source
+Install [jbang](https://www.jbang.dev/download/) once, then run md-serve directly — no manual download needed:
+
+```sh
+jbang md-serve@nikolassv/md-serve
+```
+
+To install as a named command available system-wide:
+
+```sh
+jbang app install md-serve@nikolassv/md-serve
+md-serve
+```
+To upgrade from the latest release JAR on Github:
+
+```sh
+jbang app install --force md-serve@nikolassv/md-serve
+```
+
+### Build from source
 
 You need Java 21. Clone the repository and build once:
 
@@ -34,18 +54,14 @@ cd md-serve
 ./mvnw package -q
 ```
 
-## 3. Run
-
-```sh
-./mvnw quarkus:dev
-```
+## Run
 
 The server starts on `http://localhost:8080`. By default, it serves the working directory where you run the command.
 
 To serve a different directory, set the `md-serve.source-dir` property:
 
 ```sh
-./mvnw quarkus:dev -Dmd-serve.source-dir=/path/to/your/markdown/files
+md-serve -Dmd-serve.source-dir=/path/to/your/markdown/files
 ```
 
 Or add it to `src/main/resources/application.properties`:
@@ -54,13 +70,13 @@ Or add it to `src/main/resources/application.properties`:
 md-serve.source-dir=/path/to/your/markdown/files
 ```
 
-## 4. Open your browser
+## Open your browser
 
 Navigate to `http://localhost:8080`. If your source directory contains an `index.md`, visiting `http://localhost:8080/` will automatically redirect (301) to `http://localhost:8080/index.md`, making it the landing page for that directory.
 
 Subdirectories are listed automatically. If a subdirectory contains an `index.md`, navigating to that directory will redirect to its `index.md`. Clicking a file renders it as HTML.
 
-## 5. Minimal example
+## Minimal example
 
 Create a directory with one file:
 
@@ -80,12 +96,12 @@ This is my first md-serve page.
 Run:
 
 ```sh
-./mvnw quarkus:dev -Dmd-serve.source-dir=./my-docs
+md-serve -Dmd-serve.source-dir=./my-docs
 ```
 
 Open `http://localhost:8080/hello` — you will see the rendered page with a styled heading and paragraph.
 
-## 6. Custom templates
+## Custom templates
 
 To customise the look of your pages, create `.hbs` (Handlebars) files in a `.md-serve/templates/` directory inside your source directory:
 
