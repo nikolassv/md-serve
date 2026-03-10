@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-10
+
 ### Added
 
 - Definition list Markdown syntax (`term\n: definition`) is now rendered as semantic `<dl>/<dt>/<dd>` HTML elements; the default template styles terms bold and definitions indented
@@ -33,5 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions release pipeline: builds `md-serve.jar` (uber JAR) and native executables packaged as `md-serve-<platform>.tar.gz` / `.zip` (each containing a binary named `md-serve`) for Linux, macOS (x86_64 + aarch64), and Windows on every `v*` tag push
 - GitHub Actions CI workflow (`.github/workflows/ci.yml`): runs `mvn verify` on every push to `main` and on every pull request
 
-[Unreleased]: https://github.com/nikolassv/md-serve/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/nikolassv/md-serve/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/nikolassv/md-serve/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/nikolassv/md-serve/releases/tag/v0.1.0
