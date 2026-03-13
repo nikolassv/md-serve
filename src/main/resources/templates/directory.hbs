@@ -82,6 +82,10 @@
         nav.site-tree details > summary::before { content: "▶ "; font-size: 0.65em; vertical-align: middle; color: #999; }
         nav.site-tree details[open] > summary::before { content: "▼ "; }
 
+        nav.site-tree details:not([open]) .tree-list {
+            display: none;
+        }
+
         .main-content { flex: 1; min-width: 0; }
 
         footer {
